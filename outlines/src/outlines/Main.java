@@ -60,7 +60,9 @@ public class Main extends Application {
 	private WritableImage sobel(Image img, Color color) {
 		PixelReader pr = img.getPixelReader();
 		Pixel[][] grayscale = new Pixel[(int) img.getWidth()][(int) img.getHeight()];
-		Pixel[][] result = new Pixel[(int) img.getWidth()][(int) img.getHeight()];
+		
+		WritableImage bfimg = new WritableImage((int) img.getWidth(), (int) img.getHeight());
+		PixelWriter g = bfimg.getPixelWriter();
 
 		// Create a gray scale image by replacing transparent pixels with white
 		// and all other pixels with black.
@@ -95,27 +97,8 @@ public class Main extends Application {
 				if (val > 1) {
 					val = 1;
 				}
-				result[x][y] = new Pixel(x, y, new Color(color.getRed(), color.getGreen(), color.getBlue(), val));
-			}
-		}
-
-		// Create new WritableImage to write to.
-		WritableImage bfimg = new WritableImage(result.length, result[0].length);
-		PixelWriter g = bfimg.getPixelWriter();
-		
-		// Write pixels from buffer to image.
-		for (int x = 0; x < result.length; x++) {
-			for (int y = 0; y < result[0].length; y++) {
-				Color c = null;
-				if (result[x][y] == null) {
-					c = new Color(0, 0, 0, 0);
-				} else {
-					double red = result[x][y].color.getRed();
-					double green = result[x][y].color.getGreen();
-					double blue = result[x][y].color.getBlue();
-					double op = result[x][y].color.getOpacity();
-					c = new Color(red, green, blue, op);
-				}
+				
+				Color c = new Color(color.getRed(), color.getGreen(), color.getBlue(), val);
 				g.setColor(x, y, c);
 			}
 		}
